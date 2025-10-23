@@ -5,15 +5,15 @@ let w = canvas.width = innerWidth;
 let h = canvas.height = innerHeight;
 window.addEventListener('resize', ()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight});
 
-// create stars (reduced for better performance)
-const nStars = 160;
+// create stars (optimized for performance)
+const nStars = 120; // reduced count for better performance
 const stars = [];
 for(let i=0;i<nStars;i++) stars.push({
     x: Math.random()*w,
     y: Math.random()*h,
-    z: Math.random()*1.2+0.2,
-    size: Math.random()*1.2+0.1,
-    alpha: Math.random()*0.8+0.2
+    z: Math.random()*0.8+0.2, // reduced range for more consistent performance
+    size: Math.random()*1.0+0.1,
+    alpha: Math.random()*0.7+0.2
 });
 
 let glow = 0.9;
@@ -27,9 +27,9 @@ function draw(){
   ctx.fillRect(0,0,w,h);
 
   for(const s of stars){
-    // Normal-paced, smooth star movement
-    s.x += (s.z*0.32); // normal paced star drift
-    s.y += Math.sin((s.x+s.z)*0.0014)*0.18;
+    // Balanced smooth movement with better performance
+    s.x += (s.z*0.25); // balanced speed
+    s.y += Math.sin((s.x+s.z)*0.002)*0.15;
     if(s.x > w+20){s.x=-20;s.y=Math.random()*h}
 
     // Gentle pulse
@@ -55,9 +55,9 @@ function spawnShootingStar(){
   shootingStars.push({
     x: centerX + (Math.random()-0.5)*w*0.5,
     y: centerY - h*0.18 + Math.random()*h*0.12,
-    len: Math.random()*140+80, // normal streaks
-    spd: Math.random()*5+4,    // normal speed
-    angle: Math.random()*0.5+0.18,
+    len: Math.random()*120+80, // balanced length for performance
+    spd: Math.random()*4+3,    // natural speed
+    angle: Math.random()*0.4+0.15,
     alpha: 1
   });
 }
@@ -80,8 +80,8 @@ function drawShootingStars(){
   }
 }
 
-// spawn occasional shooting star (slightly more frequent)
-setInterval(()=>{ if(Math.random()<0.85) spawnShootingStar(); }, 1000);
+// spawn occasional shooting star (optimized frequency)
+setInterval(()=>{ if(Math.random()<0.6) spawnShootingStar(); }, 1200);
 
 // Confetti removed for a calmer experience.
 // Instead we'll draw a slow, warm glow overlay that pulses gently.
@@ -92,8 +92,8 @@ function pulseWarmBoost(amount){ warmBoost = Math.max(warmBoost, amount); }
 // Cursor sparkle
 const sparkles = [];
 window.addEventListener('pointermove',(e)=>{
-  sparkles.push({x:e.clientX,y:e.clientY,life:22,alpha:1,size:Math.random()*5+3});
-  if(sparkles.length>28) sparkles.shift();
+  sparkles.push({x:e.clientX,y:e.clientY,life:20,alpha:1,size:Math.random()*4+3});
+  if(sparkles.length>20) sparkles.shift(); // reduced max sparkles
 });
 
 function drawSparkles(){
@@ -222,11 +222,11 @@ if(playPauseBtn){
   });
   
   // Fade functions (gentle)
-  const fadeStep = 0.01;
+  const fadeStep = 0.02; // balanced steps for smooth transition
   const fadeIn = () => {
     if(bgm.volume < 0.55) {
       bgm.volume = Math.min(0.55, bgm.volume + fadeStep);
-      setTimeout(fadeIn, 110);
+      setTimeout(fadeIn, 50); // balanced update rate
     }
   };
   
@@ -265,12 +265,12 @@ const explosionParticles = [];
 function createExplosion(x, y) {
   const colors = ['#ff6b85', '#ffb38a', '#ffd700', '#ff4d6d', '#ffffff'];
   
-  // Create explosion particles at a normal pace
-  for(let i = 0; i < 45; i++) {
+  // Create explosion particles (balanced performance and smoothness)
+  for(let i = 0; i < 24; i++) { // optimized particle count
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 10 + 6; // normal explosion burst
+    const speed = Math.random() * 6 + 5; // natural speed
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const delay = Math.random() * 220; // shorter random delay
+    const delay = Math.random() * 180; // balanced delay
     
     setTimeout(() => {
       explosionParticles.push({
@@ -348,10 +348,10 @@ function spawnHeart(x,y){
   hearts.push({
     x,
     y,
-    vx: (Math.random()-0.5)*3.0, // livelier horizontal movement
-    vy: Math.random()*-5-2.0,    // slightly stronger upward movement
+    vx: (Math.random()-0.5)*2.8, // natural horizontal movement
+    vy: Math.random()*-4-2,      // natural upward movement
     rot: Math.random()*360,
-    vr: (Math.random()-0.5)*3,   // Slower rotation
+    vr: (Math.random()-0.5)*2.2, // natural rotation
     life: Math.random()*90+100,  // Longer life for smoother fade
     scale: baseScale,
     targetScale: baseScale * (1 + Math.random()*0.2), // For pulsing effect
@@ -421,10 +421,10 @@ function triggerSurprise(event) {
     if(initialView) {
         initialView.style.opacity = '0';
         initialView.style.transform = 'translateY(-20px)';
-        initialView.style.transition = 'all 0.5s ease';
+        initialView.style.transition = 'all 0.6s ease-out';
         setTimeout(() => {
             initialView.remove();
-        }, 500);
+        }, 600);
     }
     
     // Show the message box with reveal button
@@ -433,7 +433,7 @@ function triggerSurprise(event) {
         messageBox.hidden = false;
         messageBox.style.opacity = '0';
         messageBox.style.transform = 'translateY(20px)';
-        messageBox.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        messageBox.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
         setTimeout(() => {
             messageBox.style.opacity = '1';
             messageBox.style.transform = 'translateY(0)';
@@ -463,11 +463,11 @@ function triggerSurprise(event) {
         for(let i=0; i<12; i++) {
             setTimeout(() => spawnShootingStar(), i * 100);
         }
-        // hearts burst in waves (optimized)
-        for(let i=0; i<24; i++) {
+        // hearts burst in waves (performance optimized)
+        for(let i=0; i<16; i++) { // reduced heart count
             setTimeout(() => {
-                spawnHeart(centerX + (Math.random()-0.5)*160, centerY + (Math.random()-0.5)*35);
-            }, i * 80);
+                spawnHeart(centerX + (Math.random()-0.5)*140, centerY + (Math.random()-0.5)*30);
+            }, i * 100);
         }
     }, 300);
 
@@ -482,7 +482,7 @@ function triggerSurprise(event) {
     // Show modal with animation
     if(surpriseModal) {
         surpriseModal.hidden = false;
-        document.querySelector('.modal-content').style.animation = 'modalIn 0.6s cubic-bezier(.17,1.5,.21,1)';
+        document.querySelector('.modal-content').style.animation = 'modalIn 0.5s ease-out';
     }
 
     // Graceful fadeout sequence
@@ -540,7 +540,7 @@ nameInput.addEventListener('keydown',(e)=>{if(e.key==='Enter') revealBtn.click()
 const visualizerContainer = document.createElement('div');
 visualizerContainer.className = 'visualizer';
 document.body.appendChild(visualizerContainer);
-const nBars = 24;
+const nBars = 16; // reduced number of bars for better performance
 const bars = [];
 for(let i=0;i<nBars;i++){ const b=document.createElement('div'); b.className='bar'; visualizerContainer.appendChild(b); bars.push(b); }
 
