@@ -1,0 +1,276 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial
+}
+html,body{
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+canvas#starfield{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at center,#00111a 0%,#000 60%);
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.overlay{position:relative;z-index:1;color:#e8f7ff;text-shadow:0 2px 12px rgba(0,0,0,0.6);height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+#title{font-size:clamp(1.4rem,4vw,3rem);letter-spacing:0.06em;margin-bottom:1rem}
+#message-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  padding: 1.2rem;
+  border-radius: 12px;
+  max-width: 720px;
+  width: 92%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#typing{min-height:3.6rem;font-size:1.05rem}
+.controls{display:flex;gap:.5rem;align-items:center;margin-top:.6rem}
+.controls input{flex:1;padding:.5rem .6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:inherit}
+.controls button {
+  padding: 0.8rem 1.4rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(90deg,#6dd3ff,#4b7bff);
+  color: #002;
+  background-blend-mode: screen;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(77,123,255,0.3);
+}
+
+#revealBtn {
+  background: linear-gradient(90deg,#ff7aa8,#ffb38a);
+  font-weight: 600;
+  padding: 1rem 2rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 20px rgba(255,122,168,0.3);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+#revealBtn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  animation: revealGlow 2s infinite;
+}
+
+@keyframes revealGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#revealBtn:hover::after {
+  opacity: 1;
+}
+
+.controls button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(77,123,255,0.4);
+}
+
+#revealBtn:hover {
+  box-shadow: 0 6px 25px rgba(255,122,168,0.4);
+}
+.hint{font-size:.82rem;color:rgba(232,247,255,0.8);margin-top:.6rem}
+#final{margin-top:1rem;text-align:center}
+#final h2{font-size:1.6rem;margin-bottom:.6rem}
+#poem{white-space:pre-wrap;font-style:italic}
+.audio-controls{margin:1rem 0;text-align:center}
+.audio-controls button{padding:.6rem 1.2rem;border-radius:8px;border:none;background:linear-gradient(90deg,#4b7bff,#6dd3ff);color:#002;cursor:pointer;font-size:.9rem;transition:opacity .2s}
+.audio-controls button:hover{opacity:0.9}
+.audio-controls small{display:block;margin-top:.4rem;color:rgba(232,247,255,0.7);font-size:.8rem}
+.audio-controls code{background:rgba(255,255,255,0.1);padding:2px 4px;border-radius:3px}
+footer{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(232,247,255,0.6)}
+/* responsive tweaks */
+@media (max-width:520px){.controls{flex-direction:column;align-items:stretch}.controls button{width:100%}}
+
+/* Visualizer bars */
+.visualizer{position:absolute;left:50%;transform:translateX(-50%);bottom:30px;display:flex;gap:6px;z-index:2}
+.visualizer .bar{width:6px;height:20px;background:linear-gradient(180deg,#9fe6ff,#3b82f6);border-radius:3px;opacity:0.9}
+
+/* small sparkle cursor */
+.sparkle{position:fixed;pointer-events:none;z-index:3;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0) 70%);mix-blend-mode:screen;transform:translate(-50%,-50%);}
+
+/* Reveal animations */
+.reveal-zoom{animation:revealZoom .6s ease both}
+@keyframes revealZoom{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.particle-burst{opacity:0;animation:fadeUp .9s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Surprise modal */
+.modal{
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.75);
+  z-index: 5;
+  backdrop-filter: blur(8px);
+}
+.modal-content{
+  background: linear-gradient(180deg,#061921,#042033);
+  padding: 2rem 2.4rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  text-align: center;
+  color: #fff;
+  max-width: 720px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+}
+.modal-content h1{
+  font-size: 2rem;
+  margin-bottom: .6rem;
+  background: linear-gradient(90deg, #fff, #e1f5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.modal-content p{
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  color: #dff7ff;
+  line-height: 1.5;
+}
+.modal-content button{
+  padding: .8rem 1.4rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(90deg, #ff8aa3, #ffb38a);
+  color: #08121e;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 15px rgba(255,138,163,0.3);
+}
+.modal-content button:hover,
+.modal-content button:active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,138,163,0.4);
+}
+
+/* Initial view styling */
+.initial-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.initial-view #title {
+  text-align: center;
+  background: linear-gradient(120deg, #fff, #e1f5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+  to { text-shadow: 0 0 30px rgba(255,255,255,0.3); }
+}
+
+/* Surprise button styling (improved accessibility & reduced-motion aware) */
+#surpriseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(90deg,#ff9fb3 0%, #ffb38a 60%);
+  color: #08121e;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(255,110,140,0.12), inset 0 -2px 6px rgba(0,0,0,0.06);
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, opacity 200ms ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* soft outline pulse (uses box-shadow, not transform) */
+@keyframes surpriseOutline {
+  0% { box-shadow: 0 8px 30px rgba(255,110,140,0.12), 0 0 0 0 rgba(255,110,140,0.00); }
+  50% { box-shadow: 0 10px 36px rgba(255,110,140,0.14), 0 0 18px 6px rgba(255,110,140,0.04); }
+  100% { box-shadow: 0 8px 30px rgba(255,110,140,0.12), 0 0 0 0 rgba(255,110,140,0.00); }
+}
+
+/* prefer reduced motion: disable animations */
+@media (prefers-reduced-motion: reduce) {
+  #surpriseBtn { transition: none; animation: none; }
+}
+
+#surpriseBtn:hover, #surpriseBtn:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 48px rgba(255,110,140,0.16), inset 0 -2px 6px rgba(0,0,0,0.06);
+  outline: none;
+}
+
+#surpriseBtn:focus-visible {
+  box-shadow: 0 10px 36px rgba(255,110,140,0.14), 0 0 0 4px rgba(255,182,180,0.12);
+}
+
+/* subtle repeating outline for attention (uses less CPU than transform animation) */
+#surpriseBtn.attention {
+  animation: surpriseOutline 2400ms infinite;
+}
+
+/* heart burst particles (canvas-drawn) */
+.heart{width:24px;height:24px;display:inline-block;background:radial-gradient(circle at 35% 30%, #fff 0%, #ffd1dc 8%, #ff7aa8 30%, #ff4d6d 70%);border-radius:50%}
+
+/* modal title glow and heart pulse */
+.surprise-heart{display:inline-block;margin-left:.6rem;color:#ff6b85;animation:heartPulse 1s ease-in-out infinite}
+@keyframes heartPulse{0%{transform:scale(0.9);opacity:0.9}50%{transform:scale(1.15);opacity:1}100%{transform:scale(0.9);opacity:0.9}}
+.modal-content h1{text-shadow:0 6px 28px rgba(255,120,140,0.08),0 1px 2px rgba(0,0,0,0.6)}
+.modal {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+.modal[hidden] {
+  display: none;
+  opacity: 0;
+}
+.modal-content {
+  animation: modalIn .44s cubic-bezier(.2,.9,.2,1);
+  transform-origin: center center;
+}
+@keyframes modalIn {
+  from {
+    transform: translateY(8px) scale(.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}

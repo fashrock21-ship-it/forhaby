@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Out of This World</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <div class="overlay">
+    <div class="initial-view">
+      <h1 id="title">For the one I dream of</h1>
+      <button id="surpriseBtn" title="Click me">Click me</button>
+    </div>
+
+    <div id="message-box" hidden>
+      <div id="typing"></div>
+      <div class="controls">
+        <input id="nameInput" value="Haby" type="hidden" />
+        <button id="revealBtn" class="glow-button">✨ Reveal Haby's Message ✨</button>
+        <button id="downloadCert" hidden>Download Certificate</button>
+      </div>
+    </div>
+
+    <div id="final" hidden>
+      <h2 id="greeting"></h2>
+      <p id="poem"></p>
+      <div class="audio-controls">
+        <button id="playPause">Play music</button>
+        <small id="audioHint"></small>
+      </div>
+      <audio id="bgm" loop src="ambient-piano-relaxing-music-347950.mp3"></audio>
+    </div>
+
+    <div id="surpriseModal" class="modal" hidden>
+      <div class="modal-content">
+        <h1 id="surpriseTitle">For Haby — My Universe <span class="surprise-heart">❤</span></h1>
+        <p id="surpriseText">Press play, close your eyes, and know this: every star is a promise I'll keep with you.</p>
+        <button id="closeSurprise">Close</button>
+      </div>
+    </div>
+
+    <footer>
+      <small>Open this file in a browser. Press space to toggle ambient glow.</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
